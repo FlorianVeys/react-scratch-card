@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import React, { RefObject } from 'react';
 import { useState } from 'react';
 import { defaults } from 'lodash';
-import { useCanvas, useParentRef, useParentRefAsRefresh } from './hook';
+import { useCanvas, useParentRef } from './hook';
 import './index.css';
 import {
   getCanvasRelativePosition,
@@ -26,12 +26,11 @@ export function ScratchCard<T extends HTMLElement>({
   className,
   children,
 }: ScratchCardProps<T>) {
-  const canvasRef = useCanvas();
-  useParentRefAsRefresh(parentRef);
+  const _scratchConfig = defaults(scratchConfig, DEFAULT_SCRATCH_CONFIG);
+
+  const canvasRef = useCanvas(_scratchConfig?.canvasConfig);
   const { parentClassName } = useParentRef(parentRef);
   const [isScratchable, setIsScratchable] = useState(false);
-
-  const _scratchConfig = defaults(scratchConfig, DEFAULT_SCRATCH_CONFIG);
 
   function startScratch() {
     setIsScratchable(true);

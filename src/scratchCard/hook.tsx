@@ -1,14 +1,5 @@
 import React, { RefObject, useEffect, useRef } from 'react';
-
-export function useParentRefAsRefresh<T extends HTMLElement>(
-  parentRef?: RefObject<T>
-) {
-  const [, refreshComponent] = React.useState<number>();
-  // Refresh state on useRef current not null
-  useEffect(() => {
-    refreshComponent(Date.now());
-  }, [parentRef?.current]);
-}
+import { CanvasConfig, CanvasColor, CanvasImage } from './model';
 
 interface ParentRefDatas {
   parentClassName?: string;
@@ -21,7 +12,7 @@ export function useParentRef<T extends HTMLElement>(
   };
 }
 
-export function useCanvas(): RefObject<HTMLCanvasElement> {
+export function useCanvas(config: CanvasConfig): RefObject<HTMLCanvasElement> {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -29,11 +20,37 @@ export function useCanvas(): RefObject<HTMLCanvasElement> {
     if (canvas) {
       const context = canvas.getContext('2d');
       if (context) {
-        context.fillStyle = '#000000';
-        context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+        const drawer = drawInCanvas(context);
+
+        drawer(config);
       }
     }
-  }, []);
+  }, [config]);
 
   return canvasRef;
+}
+
+function drawInCanvas(context: CanvasRenderingContext2D) {
+  return (config: CanvasConfig) => {
+    if (CanvasConfig.hasColor(config)) {
+      context.fillStyle = (config?.content as CanvasColor).value;
+      context.fillRect(0, 0, context.canvas.width, context.canvas.height);
+    }
+
+    if (CanvasConfig.hasImage(config)) {
+      const src = (config?.content as CanvasImage).src;
+
+      const img = new Image();
+      img.onload = () => {
+        context.drawImage(
+          img,
+          0,
+          0,
+          context.canvas.width,
+          context.canvas.height
+        );
+      };
+      img.src = src;
+    }
+  };
 }
