@@ -21,7 +21,7 @@ export function useParentRef<T extends HTMLElement>(
   };
 }
 
-export function useCanvasRef(): RefObject<HTMLCanvasElement> {
+export function useCanvas(): RefObject<HTMLCanvasElement> {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {

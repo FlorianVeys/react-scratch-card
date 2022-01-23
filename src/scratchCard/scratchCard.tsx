@@ -1,21 +1,18 @@
 import clsx from 'clsx';
-import React, { RefObject, TouchEventHandler } from 'react';
+import React, { RefObject } from 'react';
 import { useState } from 'react';
-import { defaults, get } from 'lodash';
-import { useCanvasRef, useParentRef, useParentRefAsRefresh } from './hook';
+import { defaults } from 'lodash';
+import { useCanvas, useParentRef, useParentRefAsRefresh } from './hook';
 import './index.css';
 import {
   getCanvasRelativePosition,
   getEventCoordinatesInCanvas,
 } from './helpers';
-import { CanvasMouseEvent } from './model';
-
-export type ScratchConfig = {
-  scratchRadius?: number;
-};
-const DEFAULT_SCRATCH_CONFIG = {
-  scratchRadius: 25,
-};
+import {
+  CanvasMouseEvent,
+  DEFAULT_SCRATCH_CONFIG,
+  ScratchConfig,
+} from './model';
 
 export interface ScratchCardProps<T extends HTMLElement> {
   scratchConfig?: ScratchConfig;
@@ -29,7 +26,7 @@ export function ScratchCard<T extends HTMLElement>({
   className,
   children,
 }: ScratchCardProps<T>) {
-  const canvasRef = useCanvasRef();
+  const canvasRef = useCanvas();
   useParentRefAsRefresh(parentRef);
   const { parentClassName } = useParentRef(parentRef);
   const [isScratchable, setIsScratchable] = useState(false);
